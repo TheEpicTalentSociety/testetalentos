@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Selection and Ranking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .talent-list {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .talent-list div {
+            width: 200px;
+            margin: 5px;
+        }
+
+        #choose-five-section, #ranking-section, #result-section {
+            margin-top: 20px;
+        }
+
+        #selected-talents, #chosen-talents, #result-message {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="talent-selection">
+        <h1>Select Your Talents</h1>
+        <form id="talent-form">
+            <!-- List of talents as checkboxes divided by categories -->
+            <div class="talent-list">
+                <div><input type="checkbox" id="talent1" name="talent" value="Talent 1 (Blue)"><label for="talent1">Talent 1 (Blue)</label></div>
+                <div><input type="checkbox" id="talent2" name="talent" value="Talent 2 (Blue)"><label for="talent2">Talent 2 (Blue)</label></div>
+                <div><input type="checkbox" id="talent3" name="talent" value="Talent 3 (Purple)"><label for="talent3">Talent 3 (Purple)</label></div>
+                <div><input type="checkbox" id="talent4" name="talent" value="Talent 4 (Purple)"><label for="talent4">Talent 4 (Purple)</label></div>
+                <div><input type="checkbox" id="talent5" name="talent" value="Talent 5 (Yellow)"><label for="talent5">Talent 5 (Yellow)</label></div>
+                <div><input type="checkbox" id="talent6" name="talent" value="Talent 6 (Yellow)"><label for="talent6">Talent 6 (Yellow)</label></div>
+                <div><input type="checkbox" id="talent7" name="talent" value="Talent 7 (Red)"><label for="talent7">Talent 7 (Red)</label></div>
+                <div><input type="checkbox" id="talent8" name="talent" value="Talent 8 (Red)"><label for="talent8">Talent 8 (Red)</label></div>
+                <div><input type="checkbox" id="talent9" name="talent" value="Talent 9 (Blue)"><label for="talent9">Talent 9 (Blue)</label></div>
+                <div><input type="checkbox" id="talent10" name="talent" value="Talent 10 (Blue)"><label for="talent10">Talent 10 (Blue)</label></div>
+                <div><input type="checkbox" id="talent11" name="talent" value="Talent 11 (Purple)"><label for="talent11">Talent 11 (Purple)</label></div>
+                <div><input type="checkbox" id="talent12" name="talent" value="Talent 12 (Purple)"><label for="talent12">Talent 12 (Purple)</label></div>
+                <div><input type="checkbox" id="talent13" name="talent" value="Talent 13 (Yellow)"><label for="talent13">Talent 13 (Yellow)</label></div>
+                <div><input type="checkbox" id="talent14" name="talent" value="Talent 14 (Yellow)"><label for="talent14">Talent 14 (Yellow)</label></div>
+                <div><input type="checkbox" id="talent15" name="talent" value="Talent 15 (Red)"><label for="talent15">Talent 15 (Red)</label></div>
+                <div><input type="checkbox" id="talent16" name="talent" value="Talent 16 (Red)"><label for="talent16">Talent 16 (Red)</label></div>
+                <!-- Add more red talents -->
+            </div>
+            <button type="button" id="next-button">Next</button>
+        </form>
+    </div>
+
+    <div id="choose-five-section" style="display:none;">
+        <h1>Choose 5 Talents from Your Selections</h1>
+        <form id="choose-five-form">
+            <div id="chosen-talents">
+                <!-- Chosen talents will be displayed here for selection -->
+            </div>
+            <button type="button" id="next-to-ranking-button">Next</button>
+        </form>
+    </div>
+
+    <div id="ranking-section" style="display:none;">
+        <h1>Rank Your Top 5 Talents</h1>
+        <form id="ranking-form">
+            <div id="selected-talents">
+                <!-- Selected talents will be displayed here for ranking -->
+            </div>
+            <button type="submit">Submit Rankings</button>
+        </form>
+    </div>
+
+    <div id="result-section" style="display:none;">
+        <h1>Your Results</h1>
+        <div id="result-message"></div>
+        <button id="download-button">Download Results</button>
+    </div>
+
+    <script>
+        const categoryCounts = { 'Blue': 0, 'Purple': 0, 'Yellow': 0, 'Red': 0 };
+        let selectedTalentsList = [];
+
+        document.getElementById('next-button').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('input[name="talent"]:checked');
+            if (checkboxes.length < 5) {
+                alert('Please select at least 5 talents.');
+                return;
+            }
+
+            selectedTalentsList = Array.from(checkboxes).map(cb => cb.value);
+
+            // Count categories
+            selectedTalentsList.forEach(talent => {
+                const category = talent.split(' ')[2].slice(1, -1);
+                categoryCounts[category]++;
+            });
+
+            const majorityCategory = Object.keys(categoryCounts).reduce((a, b) => categoryCounts[a] > categoryCounts[b] ? a : b);
+            const resultMessage = `Your dominant talent category is ${majorityCategory}.`;
+
+            const chosenTalentsDiv = document.getElementById('chosen-talents');
+            chosenTalentsDiv.innerHTML = '';
+            checkboxes.forEach((checkbox, index) => {
+                const talentDiv = document.createElement('div');
+                talentDiv.innerHTML = `
+                    <input type="checkbox" id="chosenTalent${index}" name="chosenTalent" value="${checkbox.value}">
+                    <label for="chosenTalent${index}">${checkbox.value}</label>
+                `;
+                chosenTalentsDiv.appendChild(talentDiv);
+            });
+
+            document.getElementById('talent-selection').style.display = 'none';
+            document.getElementById('choose-five-section').style.display = 'block';
+
+            // Store result message for later use
+            document.getElementById('result-message').innerText = resultMessage;
+        });
+
+        document.getElementById('next-to-ranking-button').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('input[name="chosenTalent"]:checked');
+            if (checkboxes.length !== 5) {
+                alert('Please select exactly 5 talents.');
+                return;
+            }
+
+            const selectedTalents = Array.from(checkboxes).map(cb => cb.value);
+            const selectedTalentsDiv = document.getElementById('selected-talents');
+            selectedTalentsDiv.innerHTML = '';
+            selectedTalents.forEach((talent, index) => {
+                const talentDiv = document.createElement('div');
+                talentDiv.innerHTML = `
+                    <label for="rank${index}">${talent}</label>
+                    <input type="number" id="rank${index}" name="rank" min="1" max="5">
+                `;
+                selectedTalentsDiv.appendChild(talentDiv);
+            });
+
+            document.getElementById('choose-five-section').style.display = 'none';
+            document.getElementById('ranking-section').style.display = 'block';
+        });
+
+        document.getElementById('ranking-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const ranks = Array.from(document.querySelectorAll('input[name="rank"]')).map(input => parseInt(input.value));
+            const uniqueRanks = new Set(ranks);
+
+            if (ranks.length !== 5 || uniqueRanks.size !== 5 || ranks.some(rank => isNaN(rank) || rank < 1 || rank > 5)) {
+                alert('Please rank exactly 5 talents with unique values between 1 and 5.');
+                return;
+            }
+
+            const rankedTalents = Array.from(document.querySelectorAll('input[name="rank"]')).map((input, index) => ({
+                talent: document.querySelector(`label[for="${input.id}"]`).innerText,
+                rank: input.value
+            }));
+
+            document.getElementById('ranking-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+
+            document.getElementById('download-button').addEventListener('click', function() {
+                const resultMessage = document.getElementById('result-message').innerText;
+                const totalTalents = selectedTalentsList.length;
+
+                // Calculate percentages for each category
+                const percentages = Object.keys(categoryCounts).map(category => {
+                    return `${category}: ${(categoryCounts[category] / totalTalents * 100).toFixed(2)}%`;
+                }).join('\n');
+
+                const content = `
+                    ${resultMessage}\n\n
+                    Percentage of talents chosen for each category:\n
+                    ${percentages}\n\n
+                    All selected talents:\n
+                    ${selectedTalentsList.join('\n')}\n\n
+                    Your top 5 ranked talents:\n
+                    ${rankedTalents.map(t => `${t.talent}: Rank ${t.rank}`).join('\n')}
+                `;
+                const blob = new Blob([content], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'talent_ranking.txt';
+                a.click();
+            });
+        });
+    </script>
+</body>
+</html>
